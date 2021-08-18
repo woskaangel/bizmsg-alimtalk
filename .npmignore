@@ -1,0 +1,26 @@
+# OSX
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# npm
+node_modules
+yarn.lock
+package-lock.json
+
+# jest
+coverage
+
+# dev
+lib
+jest.config.json
+.prettierrc.json
+.eslintrc.json
+tsconfig.json
+tsconfig.build.json
+
+#doc
+docs
+README.md
