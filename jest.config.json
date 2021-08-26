@@ -1,11 +1,12 @@
 {
   "moduleFileExtensions": ["json", "js", "jsx", "ts", "tsx"],
-  "rootDir": "./lib",
+  "rootDir": "./",
   "testRegex": ".*\\.spec\\.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "collectCoverageFrom": ["**/*.ts"],
-  "coverageDirectory": "./coverage",
-  "testEnvironment": "node"
+  "coverageDirectory": "<rootDir>/coverage",
+  "testEnvironment": "node",
+  "setupFiles": ["dotenv/config"]
 }
