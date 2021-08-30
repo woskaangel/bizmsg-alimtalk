@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-import { BizmsgPath, BizmsgUrl } from './@types/enum';
+import { BizmsgErrorCode, BizmsgPath, BizmsgUrl } from './@types/enum';
 import {
   CancelMessage,
   CancelTestTemplate,
@@ -21,6 +21,7 @@ import {
   UploadBusinessForm,
   UploadImage,
 } from './@types/interface';
+import { BizmsgErrorCodeType } from './@types/type';
 
 class AlimTalk {
   private instance: AxiosInstance = axios.create({
@@ -213,6 +214,24 @@ class AlimTalk {
   public cancelTestTemplate(data: CancelTestTemplate) {
     this.checkInit();
     return this.instance.post(BizmsgPath.cancelTestTemplate, data);
+  }
+
+  /**
+   * @title 에러 메시지 분석
+   * @description API 결과를 입력하시면 설명이 나옵니다.
+   * @example K001:NotAvailableSendMessage => 메시지를 전송할 수 없음
+   */
+  public bizmsgError(message: string) {
+    const errorType: string = message.split(':')[0];
+    const errorText = BizmsgErrorCode[<BizmsgErrorCodeType>errorType];
+    if (errorType === 'K000' || errorType === 'M000' || errorType === 'R000') {
+      return message;
+    }
+    if (!errorText) {
+      throw Error(`${errorType}: 알수없는 오류입니다. 비즈엠에 문의해주세요.`);
+    } else {
+      throw Error(`${errorType}: ${errorText}`);
+    }
   }
 }
 const alimTalk = new AlimTalk();

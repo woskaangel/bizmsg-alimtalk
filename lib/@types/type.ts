@@ -1,3 +1,5 @@
+import { BizmsgErrorCode } from './enum';
+
 /**
  * @S sms
  * @L lms
@@ -43,3 +45,4 @@ export type PluginType = 'SECURE_IMAGE' | 'ONE_TIME_PROFILE';
  * @S 기본
  */
 export type SenderProfileType = 'G' | 'S';
+export type BizmsgErrorCodeType = keyof typeof BizmsgErrorCode;
