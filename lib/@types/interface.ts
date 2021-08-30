@@ -119,7 +119,7 @@ export interface SendMessage {
    * @description 메시지 발송 주체인 카카오톡 채널 등록 후 발급되는 키
    * @length 40
    */
-  profile: string;
+  profile?: string;
 
   /**
    * @title 메시지 예약발송을 위한 시간
@@ -337,6 +337,13 @@ export interface UploadImage {
    * @default Y
    */
   wide: BooleanString;
+
+  /**
+   * @title 발신프로필키
+   * @description 메시지 발송 주체인 카카오톡 채널 등록 후 발급되는 키
+   * @length 40
+   */
+  profile?: string;
 }
 export interface DeleteImage {
   /**
@@ -344,6 +351,13 @@ export interface DeleteImage {
    * @description 응답으로 수신받은 img_url
    */
   image_name: string;
+
+  /**
+   * @title 발신프로필키
+   * @description 메시지 발송 주체인 카카오톡 채널 등록 후 발급되는 키
+   * @length 40
+   */
+  profile?: string;
 }
 export interface UploadBusinessForm {
   /**
@@ -474,9 +488,12 @@ export interface ConfirmTestToken {
 }
 export interface ConfirmTestTemplate {
   /**
-   * @title  발신 프로필 키
+   * @title 발신프로필키
+   * @description 메시지 발송 주체인 카카오톡 채널 등록 후 발급되는 키
+   * @length 40
    */
-  senderKey: string;
+  senderKey?: string;
+
   /**
    * @title 템플릿 코드
    */
@@ -494,9 +511,12 @@ export interface ConfirmTestTemplate {
 }
 export interface CancelTestTemplate {
   /**
-   * @title  발신 프로필 키
+   * @title 발신프로필키
+   * @description 메시지 발송 주체인 카카오톡 채널 등록 후 발급되는 키
+   * @length 40
    */
-  senderKey: string;
+  senderKey?: string;
+
   /**
    * @title 템플릿 코드
    */
