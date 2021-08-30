@@ -1,7 +1,5 @@
 # Bizmsg-alimtalk
 
----
-
 - [비즈엠 이용 가이드](https://www.bizmsg.kr/collected_statics/assets_landing/doc/bizm_guide.pdf)
 - [API 연동 가이드](https://www.bizmsg.kr/collected_statics/assets_landing/doc/bizm.pdf)
 - [API 결과 코드](https://alimtalk-api.bizmsg.kr/codeList.html)
@@ -9,8 +7,6 @@
 - [이미지 알림톡 사용 가이드](https://www.bizmsg.kr/collected_statics/assets_landing/doc/alimtalk_template_image_guide.zip)
 
 # Installing
-
----
 
 Using npm:
 
@@ -25,8 +21,6 @@ $ yarn add bizmsg-alimtalk
 ```
 
 # Usage
-
----
 
 ### Production
 
