@@ -1,12 +1,19 @@
 {
   "name": "bizmsg-alimtalk",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Bizmsg's AlimTalk Send Service Module in Nodejs",
-  "main": "dist/index.js",
+  "main": "dist/lib/index.js",
   "repository": "https://github.com/woskaangel/bizmsg-alimtalk",
   "author": "woskaangel <woskaangel@naver.com>",
   "license": "MIT",
   "private": false,
+  "keywords": [
+    "kakao",
+    "kakaotalk",
+    "alimtalk",
+    "friendtalk",
+    "bizmsg"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
