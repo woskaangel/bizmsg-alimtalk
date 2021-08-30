@@ -24,7 +24,7 @@ import {
 import { BizmsgErrorCodeType } from './@types/type';
 
 class AlimTalk {
-  public instance: AxiosInstance = axios.create({
+  private instance: AxiosInstance = axios.create({
     headers: {
       'Content-type': 'application/json',
     },
@@ -32,26 +32,41 @@ class AlimTalk {
     responseType: 'json',
   });
 
+  private profile: string;
+
   private initialized = false;
 
-  constructor(userId: string, url: string) {
+  constructor(userId: string, profileKey: string, url: string) {
     this.initialized = true;
-    alimTalk.instance.defaults.headers.userid = userId;
-    alimTalk.instance.defaults.baseURL = url;
+    this.instance.defaults.headers.userid = userId;
+    this.profile = profileKey;
+    this.instance.defaults.baseURL = url;
   }
 
   public checkInit() {
-    if (!this.initialized) {
+    if (!this.initialized || !this.profile) {
       throw Error('Not initialized. Please run the init function first.');
     }
   }
+
+  public getInstance() {
+    return this.instance;
+  }
+
+  public getProfile() {
+    if (!this.profile) {
+      throw Error('Not initialized. Please run the init function first.');
+    }
+    return this.profile;
+  }
 }
 let alimTalk: AlimTalk;
+
 /**
  * @title 사용자 정보 초기화
  */
-export function init(userId: string, options?: { dev: boolean }) {
-  alimTalk = new AlimTalk(userId, options && options.dev ? BizmsgUrl.devUrl : BizmsgUrl.prodUrl);
+export function init(userId: string, profileKey: string, options?: { dev: boolean }) {
+  alimTalk = new AlimTalk(userId, profileKey, options && options.dev ? BizmsgUrl.devUrl : BizmsgUrl.prodUrl);
 }
 
 /**
@@ -64,10 +79,11 @@ export function sendMessage(data: SendMessage | SendMessage[]) {
     if (data.length > 100) {
       throw Error('Max length of array is 100.');
     }
-    return alimTalk.instance.post(
+    return alimTalk.getInstance().post(
       BizmsgPath.send,
       data.reduce((result: SendMessage[], message: SendMessage) => {
         result.push({
+          profile: alimTalk.getProfile(),
           message_type: 'AT',
           reserveDt: '00000000000000',
           ...message,
@@ -76,8 +92,9 @@ export function sendMessage(data: SendMessage | SendMessage[]) {
       }, []),
     );
   }
-  return alimTalk.instance.post(BizmsgPath.send, [
+  return alimTalk.getInstance().post(BizmsgPath.send, [
     {
+      profile: alimTalk.getProfile(),
       message_type: 'AT',
       reserveDt: '00000000000000',
       ...data,
@@ -90,7 +107,7 @@ export function sendMessage(data: SendMessage | SendMessage[]) {
  */
 export function checkMessage(data: CheckMessage) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.check, { data });
+  return alimTalk.getInstance().get(BizmsgPath.check, { data });
 }
 
 /**
@@ -98,23 +115,29 @@ export function checkMessage(data: CheckMessage) {
  */
 export function cancelReserve(data: CancelMessage) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.cancelReserve, data);
+  return alimTalk.getInstance().post(BizmsgPath.cancelReserve, data);
 }
 
 /**
  * @title 이미지 업로드
  */
-export function uploadImage(profileKey: string, data: UploadImage) {
+export function uploadImage(data: UploadImage) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.uploadImage.replace('{profile_key}', profileKey), data);
+  const profileKey = data.profile ?? alimTalk.getProfile();
+  const sendData = data;
+  delete sendData.profile;
+  return alimTalk.getInstance().post(BizmsgPath.uploadImage.replace('{profile_key}', profileKey), sendData);
 }
 
 /**
  * @title 이미지 삭제
  */
-export function deleteImage(profileKey: string, data: DeleteImage) {
+export function deleteImage(data: DeleteImage) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.deleteImage.replace('{profile_key}', profileKey), data);
+  const profileKey = data.profile ?? alimTalk.getProfile();
+  const sendData = data;
+  delete sendData.profile;
+  return alimTalk.getInstance().post(BizmsgPath.deleteImage.replace('{profile_key}', profileKey), sendData);
 }
 
 /**
@@ -122,7 +145,7 @@ export function deleteImage(profileKey: string, data: DeleteImage) {
  */
 export function uploadBusinessForm(data: UploadBusinessForm) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.uploadBusinessForm, data);
+  return alimTalk.getInstance().post(BizmsgPath.uploadBusinessForm, data);
 }
 
 /**
@@ -130,7 +153,7 @@ export function uploadBusinessForm(data: UploadBusinessForm) {
  */
 export function getBusinessFormList(data: GetBusinessFormList) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getBusinessFormList, { data });
+  return alimTalk.getInstance().get(BizmsgPath.getBusinessFormList, { data });
 }
 
 /**
@@ -138,7 +161,7 @@ export function getBusinessFormList(data: GetBusinessFormList) {
  */
 export function getBusinessForm(data: GetBusinessForm) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getBusinessForm, { data });
+  return alimTalk.getInstance().get(BizmsgPath.getBusinessForm, { data });
 }
 
 /**
@@ -146,7 +169,7 @@ export function getBusinessForm(data: GetBusinessForm) {
  */
 export function createCallbackUrl(data: CreateCallbackUrl) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.createCallbackUrl, data);
+  return alimTalk.getInstance().post(BizmsgPath.createCallbackUrl, data);
 }
 
 /**
@@ -154,7 +177,7 @@ export function createCallbackUrl(data: CreateCallbackUrl) {
  */
 export function updateCallbackUrl(data: UpdateCallbackUrl) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.updateCallbackUrl, data);
+  return alimTalk.getInstance().post(BizmsgPath.updateCallbackUrl, data);
 }
 
 /**
@@ -162,7 +185,7 @@ export function updateCallbackUrl(data: UpdateCallbackUrl) {
  */
 export function deleteCallbackUrl(data: DeleteCallbackUrl) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.deleteCallbackUrl, data);
+  return alimTalk.getInstance().post(BizmsgPath.deleteCallbackUrl, data);
 }
 
 /**
@@ -170,7 +193,7 @@ export function deleteCallbackUrl(data: DeleteCallbackUrl) {
  */
 export function getCallbackUrlList(data: GetCallbackUrlList) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getCallbackUrlList, { data });
+  return alimTalk.getInstance().get(BizmsgPath.getCallbackUrlList, { data });
 }
 
 /**
@@ -178,7 +201,7 @@ export function getCallbackUrlList(data: GetCallbackUrlList) {
  */
 export function getCallbackUrl(data: GetCallbackUrl) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getCallbackUrl, { data });
+  return alimTalk.getInstance().get(BizmsgPath.getCallbackUrl, { data });
 }
 
 /**
@@ -186,7 +209,7 @@ export function getCallbackUrl(data: GetCallbackUrl) {
  */
 export function getBalance(data: GetBalance) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getBalance, { headers: data });
+  return alimTalk.getInstance().get(BizmsgPath.getBalance, { headers: data });
 }
 
 /**
@@ -194,7 +217,7 @@ export function getBalance(data: GetBalance) {
  */
 export function getTestToken(data: GetTestToken) {
   alimTalk.checkInit();
-  return alimTalk.instance.get(BizmsgPath.getTestToken, { params: data });
+  return alimTalk.getInstance().get(BizmsgPath.getTestToken, { params: data });
 }
 
 /**
@@ -202,7 +225,7 @@ export function getTestToken(data: GetTestToken) {
  */
 export function confirmTestToken(data: ConfirmTestToken) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.confirmTestToken, { params: data });
+  return alimTalk.getInstance().post(BizmsgPath.confirmTestToken, { params: data });
 }
 
 /**
@@ -210,7 +233,7 @@ export function confirmTestToken(data: ConfirmTestToken) {
  */
 export function confirmTestTemplate(data: ConfirmTestTemplate) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.confirmTestTemplate, data);
+  return alimTalk.getInstance().post(BizmsgPath.confirmTestTemplate, { senderKey: alimTalk.getProfile(), ...data });
 }
 
 /**
@@ -218,7 +241,7 @@ export function confirmTestTemplate(data: ConfirmTestTemplate) {
  */
 export function cancelTestTemplate(data: CancelTestTemplate) {
   alimTalk.checkInit();
-  return alimTalk.instance.post(BizmsgPath.cancelTestTemplate, data);
+  return alimTalk.getInstance().post(BizmsgPath.cancelTestTemplate, { senderKey: alimTalk.getProfile(), ...data });
 }
 
 /**
