@@ -99,20 +99,21 @@ interface RequestQuickReply {
    */
   scheme_android?: string;
 }
-export interface SendMessage {
-  /**
-   * @title 메시지 타입
-   * @typedef {string} MessageType
-   * @default AT
-   */
-  message_type?: BizmsgMessageType;
-
+export interface SendMessage extends CreateSMessage {
   /**
    * @title 전화번호
    * @description 국가코드(82)를 포함한 전화번호
    * @length 15
    */
   phn: string;
+}
+export interface CreateSMessage {
+  /**
+   * @title 메시지 타입
+   * @typedef {string} MessageType
+   * @default AT
+   */
+  message_type?: BizmsgMessageType;
 
   /**
    * @title 발신프로필키

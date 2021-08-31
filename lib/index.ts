@@ -8,6 +8,7 @@ import {
   ConfirmTestTemplate,
   ConfirmTestToken,
   CreateCallbackUrl,
+  CreateSMessage,
   DeleteCallbackUrl,
   DeleteImage,
   GetBalance,
@@ -32,11 +33,11 @@ class AlimTalk {
     responseType: 'json',
   });
 
-  private profile: string;
+  private profile?: string;
 
   private initialized = false;
 
-  constructor(userId: string, profileKey: string, url: string) {
+  public init(userId: string, profileKey: string, url: string) {
     this.initialized = true;
     this.instance.defaults.headers.userid = userId;
     this.profile = profileKey;
@@ -60,13 +61,13 @@ class AlimTalk {
     return this.profile;
   }
 }
-let alimTalk: AlimTalk;
+const alimTalk: AlimTalk = new AlimTalk();
 
 /**
  * @title 사용자 정보 초기화
  */
 export function init(userId: string, profileKey: string, options?: { dev: boolean }) {
-  alimTalk = new AlimTalk(userId, profileKey, options && options.dev ? BizmsgUrl.devUrl : BizmsgUrl.prodUrl);
+  alimTalk.init(userId, profileKey, options && options.dev ? BizmsgUrl.devUrl : BizmsgUrl.prodUrl);
 }
 
 /**
@@ -261,4 +262,22 @@ export function bizmsgError(message: string) {
     throw Error(`${errorType}: ${errorText}`);
   }
 }
+
+export function createArrayMessage(phnArray: string[], message: CreateSMessage) {
+  return phnArray.reduce((result: SendMessage[], phn: string) => {
+    result.push({
+      phn,
+      profile: alimTalk.getProfile(),
+      message_type: 'AT',
+      reserveDt: '00000000000000',
+      ...message,
+    });
+    return result;
+  }, []);
+}
 export * as default from '.';
+console.log(
+  createArrayMessage(['01012345678', '01012345678', '01012345678', '01012345678', '01012345678'], {
+    msg: 'hi',
+  }),
+);
