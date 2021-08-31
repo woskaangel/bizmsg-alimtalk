@@ -276,8 +276,3 @@ export function createArrayMessage(phnArray: string[], message: CreateSMessage) 
   }, []);
 }
 export * as default from '.';
-console.log(
-  createArrayMessage(['01012345678', '01012345678', '01012345678', '01012345678', '01012345678'], {
-    msg: 'hi',
-  }),
-);
