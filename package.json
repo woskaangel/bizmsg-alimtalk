@@ -1,6 +1,6 @@
 {
   "name": "bizmsg-alimtalk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Bizmsg's AlimTalk Send Service Module in Nodejs",
   "main": "dist/lib/index.js",
   "repository": "https://github.com/woskaangel/bizmsg-alimtalk",
