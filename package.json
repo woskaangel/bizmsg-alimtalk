@@ -12,7 +12,12 @@
     "kakaotalk",
     "alimtalk",
     "friendtalk",
-    "bizmsg"
+    "bizmsg",
+    "카카오",
+    "카카오톡",
+    "알림톡",
+    "친구톡",
+    "비즈엠"
   ],
   "scripts": {
     "prebuild": "rimraf dist",
